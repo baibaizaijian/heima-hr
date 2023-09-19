@@ -10,6 +10,7 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login'] // no redirect whitelist
 
+// 全局前置守卫
 router.beforeEach(async(to, from, next) => {
   // start progress bar
   NProgress.start()
@@ -57,7 +58,7 @@ router.beforeEach(async(to, from, next) => {
     }
   }
 })
-
+// 全局后置守卫
 router.afterEach(() => {
   // finish progress bar
   NProgress.done()
