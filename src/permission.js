@@ -9,7 +9,7 @@ import { Message } from 'element-ui'
 // 白名单
 const whiteList = ['/login']
 // 前置守卫
-router.beforeEach((to, form, next) => {
+router.beforeEach(async(to, form, next) => {
   // 开启进度条
   nprogress.start()
   // 判断是否登录
@@ -19,6 +19,10 @@ router.beforeEach((to, form, next) => {
       next('/')
       nprogress.done()
     } else {
+      // 判断是否发过请求,获取用户信息
+      if (!store.getters.userInfo.userId) {
+        await store.dispatch('user/getUserInfo')
+      }
       next()
     }
   } else {

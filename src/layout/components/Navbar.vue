@@ -7,8 +7,9 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
-          <i class="el-icon-caret-bottom" />
+          <img :src="avatar" class="user-avatar">
+          <span class="name">{{ name }}</span>
+          <i class="el-icon-setting" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/">
@@ -32,6 +33,7 @@
 </template>
 
 <script>
+// 辅助函数+快捷访问
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
@@ -44,7 +46,8 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar'
+      'avatar',
+      'name'
     ])
   },
   methods: {
@@ -117,11 +120,14 @@ export default {
       .avatar-wrapper {
         margin-top: 5px;
         position: relative;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
 
         .user-avatar {
           cursor: pointer;
-          width: 40px;
-          height: 40px;
+          width: 30px;
+          height: 30px;
           border-radius: 10px;
         }
 
@@ -131,9 +137,17 @@ export default {
           right: -20px;
           top: 25px;
           font-size: 12px;
+
+        .el-icon-setting {
+          font-size: 24px;
+        }
         }
       }
     }
   }
 }
+  .name {
+          margin: 0 10px;
+        }
+
 </style>
