@@ -1,9 +1,11 @@
 import { getToken, removeToken, setToken } from '@/utils/auth'
-import { login } from '@/api/user'
+import { getInfo, login } from '@/api/user'
 export default {
   namespaced: true,
   state: {
-    token: getToken()
+    token: getToken(),
+    // 用户信息
+    userInfo: {}
   },
   mutations: {
     setToken(state, token) {
@@ -17,6 +19,9 @@ export default {
       state.token = null
       // 将本地的 token 清空
       removeToken()
+    },
+    setUserInfo(state, userInfo) {
+      state.userInfo = userInfo
     }
   },
   actions: {
@@ -24,8 +29,12 @@ export default {
       // TODO: 发请求
       const res = await login(data)
       console.log(res)
-
       context.commit('setToken', res)
+    },
+    async getUserInfo(context) {
+      const userInfo = await getInfo()
+      console.log(userInfo)
+      context.commit('setUserInfo', userInfo)
     }
   },
   getters: {}

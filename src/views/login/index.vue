@@ -64,6 +64,8 @@ export default {
         // 兜底校验
         await this.$refs.form.validate()
         await this.$store.dispatch('user/login', this.form)
+        // 提示用户
+        this.$message.success('登录成功')
         this.$router.push('/')
       } catch (error) {
         this.isValidating = true
