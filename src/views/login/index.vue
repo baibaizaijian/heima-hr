@@ -22,7 +22,7 @@
               用户平台使用协议
             </el-checkbox></el-form-item>
           <el-form-item>
-            <el-button style="width: 350px" type="primary" @click="login">登录</el-button>
+            <el-button style="width: 350px" type="primary" :class="{'btn':isValidating }" @click="login">登录</el-button>
           </el-form-item>
         </el-form>
       </el-card>
@@ -35,10 +35,11 @@ export default {
   data() {
     return {
       form: {
-        mobile: '',
-        password: '',
-        isAgree: false
+        mobile: process.env.NODE_ENV === 'development' ? '13800000002' : '',
+        password: process.env.NODE_ENV === 'development' ? 'hm#qd@23!' : '',
+        isAgree: process.env.NODE_ENV === 'development'
       },
+      isValidating: false,
       rules: {
         mobile: [
           { required: true, message: '请输入手机号', trigger: 'blur' },
@@ -62,10 +63,13 @@ export default {
       try {
         // 兜底校验
         await this.$refs.form.validate()
-        console.log('我要登录')
-        this.$store.dispatch('user/login')
+        await this.$store.dispatch('user/login', this.form)
+        this.$router.push('/')
       } catch (error) {
-        return
+        this.isValidating = true
+        setTimeout(() => {
+          this.isValidating = false
+        }, 1000)
       }
     }
   }
@@ -126,5 +130,15 @@ export default {
       color: #606266;
     }
   }
+}
+.btn{
+    animation: Animation 1s  ;
+
+}
+@keyframes Animation {
+0% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-10px) ; }
+  20%, 40%, 60%, 80% { transform: translateX(10px) ; }
+  100% { transform: translateX(0); }
 }
 </style>

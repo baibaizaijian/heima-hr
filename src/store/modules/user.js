@@ -1,5 +1,5 @@
 import { getToken, removeToken, setToken } from '@/utils/auth'
-
+import { login } from '@/api/user'
 export default {
   namespaced: true,
   state: {
@@ -20,11 +20,12 @@ export default {
     }
   },
   actions: {
-    login(context) {
+    async login(context, data) {
       // TODO: 发请求
-      // 模拟得到了 token
-      const token = 123456
-      context.commit('setToken', token)
+      const res = await login(data)
+      console.log(res)
+
+      context.commit('setToken', res)
     }
   },
   getters: {}
