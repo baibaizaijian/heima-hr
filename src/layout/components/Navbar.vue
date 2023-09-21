@@ -33,19 +33,19 @@
     </div>
     <!-- append-to-body 设置弹出框 -->
     <el-dialog title="修改密码" :visible.sync="Visible" width="35%">
-      <el-form ref="form" v-model="form" label-width="120px" class="form">
-        <el-form-item label="旧密码">
+      <el-form ref="form" :model="form" :rules="rules" label-width="120px" class="form">
+        <el-form-item label="旧密码" prop="oldPassword">
           <el-input v-model="form.oldPassword" show-password />
         </el-form-item>
-        <el-form-item label="新密码">
+        <el-form-item label="新密码" prop="newPassword">
           <el-input v-model="form.newPassword" show-password />
         </el-form-item>
-        <el-form-item label="重复密码">
+        <el-form-item label="重复密码" prop="Password">
           <el-input v-model="form.Password" show-password />
         </el-form-item>
         <el-form-item>
-          <el-button size="mini" type="primary">确认修改</el-button>
-          <el-button size="mini">取消</el-button>
+          <el-button size="mini" type="primary" @click="confirm">确认修改</el-button>
+          <el-button size="mini" @click="cancel">取消</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -57,6 +57,7 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
+import { updatePass } from '@/api/user'
 
 export default {
   components: {
@@ -70,6 +71,25 @@ export default {
         oldPassword: '',
         newPassword: '',
         Password: ''
+      },
+      rules: {
+        oldPassword: [{ required: true, message: '请输入旧密码', trigger: 'blur' },
+          { min: 6, max: 16, message: '密码应该为6 ~ 16位', trigger: 'blur' }],
+        newPassword: [{ required: true, message: '请输入新密码', trigger: 'blur' },
+          { min: 6, max: 16, message: '密码应该为6 ~ 16位', trigger: 'blur' }],
+        Password: [{ required: true, message: '请输入确认密码', trigger: 'blur' },
+          { min: 6, max: 16, message: '密码应该为6 ~ 16位', trigger: 'blur' }, {
+            validator: (rule, val, cb) => {
+              if (val === this.form.newPassword) {
+                cb()
+              } else {
+                cb(new Error('两次输入的密码不一致'))
+              }
+            },
+            trigger: 'blur'
+          }
+        ]
+
       }
 
     }
@@ -88,6 +108,16 @@ export default {
     async logout() {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    },
+    cancel() {
+      this.$refs.form.resetFields()
+      this.Visible = false
+    },
+    async confirm() {
+      await this.$refs.form.validate()
+      await updatePass(this.form)
+      this.$message.success('修改密码成功')
+      this.cancel()
     }
   }
 }
