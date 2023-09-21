@@ -66,7 +66,8 @@ export default {
         await this.$store.dispatch('user/login', this.form)
         // 提示用户
         this.$message.success('登录成功')
-        this.$router.push('/')
+        // 放回上次页面
+        this.$router.push(this.$route.query.redirect || '/')
       } catch (error) {
         this.isValidating = true
         setTimeout(() => {

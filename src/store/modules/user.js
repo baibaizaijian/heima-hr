@@ -35,6 +35,11 @@ export default {
       const userInfo = await getInfo()
       console.log(userInfo)
       context.commit('setUserInfo', userInfo)
+    },
+    // 退出函数
+    logout(context) {
+      context.commit('removeToken')
+      context.commit('setUserInfo', {})
     }
   },
   getters: {}

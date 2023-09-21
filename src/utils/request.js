@@ -1,3 +1,4 @@
+import router from '@/router'
 import store from '@/store'
 import axios from 'axios'
 import { Message } from 'element-ui'
@@ -36,9 +37,13 @@ service.interceptors.response.use(function(response) {
     return Promise.reject(new Error(message))
   }
 }, function(error) {
-  // 响应失败,直接抛出  列如地址错误
-  // 提示用户
-  Message.error(error.response.data.message)
+  if (error.response.status === 401) {
+    // 提示用户
+    Message.error('请重新登录')
+    // 退出登录
+    store.dispatch('user/logout')
+    router.push('/login')
+  } else { Message.error(error.response.data.message) }
   return Promise.reject(error)
 })
 

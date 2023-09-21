@@ -7,28 +7,48 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar" class="user-avatar">
+          <!-- 头像 -->
+          <img v-if="avatar" :src="avatar" class="user-avatar">
+          <!-- name?.charAt(0)可选链操作符name -->
+          <span v-else class="user-avatar name-avatar">{{ name?.charAt(0) }}</span>
+          <!-- 用户名 -->
           <span class="name">{{ name }}</span>
           <i class="el-icon-setting" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/">
             <el-dropdown-item>
-              Home
+              首页
             </el-dropdown-item>
           </router-link>
           <a target="_blank" href="https://github.com/PanJiaChen/vue-admin-template/">
-            <el-dropdown-item>Github</el-dropdown-item>
+            <el-dropdown-item>项目地址</el-dropdown-item>
           </a>
-          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
-            <el-dropdown-item>Docs</el-dropdown-item>
-          </a>
-          <el-dropdown-item divided @click.native="logout">
-            <span style="display:block;">Log Out</span>
+          <el-dropdown-item @click.native="Visible=true">修改密码</el-dropdown-item>
+          <el-dropdown-item @click.native="logout">
+            <span style="display:block;">退出登录</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+    <!-- append-to-body 设置弹出框 -->
+    <el-dialog title="修改密码" :visible.sync="Visible" width="35%">
+      <el-form ref="form" v-model="form" label-width="120px" class="form">
+        <el-form-item label="旧密码">
+          <el-input v-model="form.oldPassword" show-password />
+        </el-form-item>
+        <el-form-item label="新密码">
+          <el-input v-model="form.newPassword" show-password />
+        </el-form-item>
+        <el-form-item label="重复密码">
+          <el-input v-model="form.Password" show-password />
+        </el-form-item>
+        <el-form-item>
+          <el-button size="mini" type="primary">确认修改</el-button>
+          <el-button size="mini">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -42,6 +62,17 @@ export default {
   components: {
     Breadcrumb,
     Hamburger
+  },
+  data() {
+    return {
+      Visible: false,
+      form: {
+        oldPassword: '',
+        newPassword: '',
+        Password: ''
+      }
+
+    }
   },
   computed: {
     ...mapGetters([
@@ -128,9 +159,14 @@ export default {
           cursor: pointer;
           width: 30px;
           height: 30px;
-          border-radius: 10px;
+          border-radius: 50px;
         }
-
+        .name-avatar {
+          text-align: center;
+          line-height: 30px;
+          background-color: #04c9be;
+          color: white;
+        }
         .el-icon-caret-bottom {
           cursor: pointer;
           position: absolute;
@@ -149,5 +185,7 @@ export default {
   .name {
           margin: 0 10px;
         }
-
+.form{
+  margin-right: 50px;
+}
 </style>
