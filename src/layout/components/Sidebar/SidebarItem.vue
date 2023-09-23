@@ -92,6 +92,7 @@ export default {
       return false
     },
     resolvePath(routePath) {
+      // 是否为外部链接
       if (isExternal(routePath)) {
         return routePath
       }
