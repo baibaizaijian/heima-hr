@@ -38,10 +38,12 @@ import social from './modules/social'
  * a base page that does not have permission requirements
  * all roles can be accessed
  */
+// 路由数组
 export const constantRoutes = [
   {
     path: '/login',
     component: () => import('@/views/login/index'),
+    // 是否隐藏当前项
     hidden: true
   },
 
@@ -79,7 +81,8 @@ export const constantRoutes = [
 ]
 
 const createRouter = () => new Router({
-  // mode: 'history', // require service support
+  // mode: 'history', //这表示没有启用基于 history 的路由模式。
+  // scrollBehavior选项定义了路由切换时页面滚动的行为，它会将页面滚动到顶部（{ y: 0 }）
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 })

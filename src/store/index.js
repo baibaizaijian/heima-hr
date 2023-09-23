@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import getters from './getters'
 import app from './modules/app'
+// 外部导入的设置
 import settings from './modules/settings'
 import user from './modules/user'
 

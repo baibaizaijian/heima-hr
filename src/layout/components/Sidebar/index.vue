@@ -1,5 +1,6 @@
 <template>
   <div :class="{'has-logo':showLogo}">
+    <!-- 封装的组件logo -->
     <logo v-if="showLogo" :collapse="isCollapse" />
     <el-scrollbar wrap-class="scrollbar-wrapper">
       <el-menu
@@ -12,6 +13,7 @@
         :collapse-transition="false"
         mode="vertical"
       >
+        <!-- 根据路由规则循环遍历 -->
         <sidebar-item v-for="route in routes" :key="route.path" :item="route" :base-path="route.path" />
       </el-menu>
     </el-scrollbar>
@@ -31,6 +33,8 @@ export default {
       'sidebar'
     ]),
     routes() {
+      // $router.options.routes我们配置的路由规则
+      console.log(this.$router.options.routes)
       return this.$router.options.routes
     },
     activeMenu() {

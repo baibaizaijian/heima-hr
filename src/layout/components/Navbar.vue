@@ -21,7 +21,7 @@
               首页
             </el-dropdown-item>
           </router-link>
-          <a target="_blank" href="https://github.com/PanJiaChen/vue-admin-template/">
+          <a target="_blank" href="https://gitee.com/baizhengzheng/hmhr">
             <el-dropdown-item>项目地址</el-dropdown-item>
           </a>
           <el-dropdown-item @click.native="Visible=true">修改密码</el-dropdown-item>
