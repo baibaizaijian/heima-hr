@@ -10,17 +10,19 @@ export const getRoleList = (params) => request.get('/sys/role', { params })
  * @returns
  */
 export const getRole = (id) => request.get(`/sys/role${id}`)
+
 /**
  *新增角色
  * @returns
  */
-export const addRole = () => request.post('/sys/role')
+export const addRole = (data) => request.post('/sys/role', data)
+
 /**
  * 删除角色
  * @param {*} id
  * @returns
  */
-export const delRole = (id) => request.post(`/sys/role${id}`)
+export const delRole = (id) => request.delete(`/sys/role/${id}`)
 /**
  * 修改-角色
  * @param {*} id
