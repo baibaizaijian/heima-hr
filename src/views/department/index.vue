@@ -27,11 +27,11 @@
         </template>
       </el-tree>
     </div>
-    <AddDept :pid="currentID" :show-dialog.sync="showDialog" @updateData="getDate()" />
+    <AddDept ref="addDept" :currentid="currentID" :show-dialog.sync="showDialog" @updateData="getDate()" />
   </div>
 </template>
 <script>
-import { getDepartmentList } from '@/api/department'
+import { getDepartmentList, delDepartment } from '@/api/department'
 import { transList } from '@/utils'
 import AddDept from './add-dept.vue'
 export default {
@@ -62,11 +62,33 @@ export default {
       // console.log(this.treeData)
     },
 
-    hCommand(type, id) {
+    async  hCommand(type, id) {
       if (type === 'add') {
         // 弹出 dialog
         this.showDialog = true
         this.currentID = id
+      } else if (type === 'edit') {
+        // 点击的是编辑
+        // 弹出 dialog
+        this.showDialog = true
+        // 传递当前被点击的部门 id
+        this.currentID = id
+        // DOM 更新是异步的, Props 单向数据流的更新也是异步的
+        // 结论: props 和 DOM 更新都是异步的
+        // 调用子组件获取详情的方法
+        // ref 有两个作用:
+        // 1. 可用于获取 DOM 元素
+        // 2. 可用于获取组件对象
+        // console.log('父组件:', this.currentID)
+        this.$nextTick(() => {
+          this.$refs.addDept.getDetail()
+        })
+      } else {
+        // console.log('我要删除')
+        await this.$confirm('确认要删除吗', '确认删除')
+        await delDepartment(id)
+        this.$message.success('删除成功')
+        this.getDate()
       }
     }
   }

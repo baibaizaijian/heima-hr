@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="添加部门" :visible="showDialog" @close="close">
+  <el-dialog :title="form.id?'编辑部门': '添加部门'" :visible="showDialog" @close="close">
     <el-form ref="form" label-width="120px" :model="form" :rules="rules">
       <el-form-item label="部门名称" style="width:80%" prop="name">
         <el-input v-model.trim="form.name" size="mini" placeholder="2到10个字符" />
@@ -33,14 +33,14 @@
 </template>
 
 <script>
-import { getDepartmentList, getManagerList, addDepartment } from '@/api/department'
+import { getDepartmentList, getManagerList, addDepartment, getDepartmentDetail, updateDepartment } from '@/api/department'
 export default {
   props: {
     showDialog: {
       type: Boolean,
       required: true
     },
-    pid: {
+    currentid: {
       type: [Number, String], // 更宽松的校验类型, 既可以是 number 又可以是 string 不能为null 因为null不是构造函数
       required: true
     }
@@ -59,7 +59,16 @@ export default {
         name: [{ required: true, message: '部门名称不能为空', trigger: 'blur' }, {
           min: 2, max: 10, message: '请输入2~10个字符', trigger: 'blur' }, {
           validator: async(rule, value, callback) => {
-            const res = await getDepartmentList()
+            // console.log('当前id', this.form.id)
+            let res = await getDepartmentList()
+            // 判断当前是编辑功能还是添加功能
+            // 如何判断当前是编辑呢?
+            // console.log('当前id', this.form.id)
+            if (this.form.id) {
+              // 如果有 id 说明此时是编辑
+              res = res.filter(item => item.id !== this.form.id)
+            }
+
             if (res.some(item => item.name === value)) {
               callback(new Error('部门名称已存在'))
             } else {
@@ -72,7 +81,15 @@ export default {
           { min: 2, max: 10, message: '请输入2~10个字符', trigger: 'blur' },
           {
             validator: async(rule, value, callback) => {
-              const res = await getDepartmentList()
+              let res = await getDepartmentList()
+              // 判断当前是编辑功能还是添加功能
+              // 如何判断当前是编辑呢?
+              // console.log('当前id', this.form.id)
+              if (this.form.id) {
+              // 如果有 id 说明此时是编辑
+                res = res.filter(item => item.id !== this.form.id)
+              }
+
               if (res.some(item => item.code === value)) {
                 callback(new Error('部门编码已存在'))
               } else {
@@ -98,14 +115,30 @@ export default {
       // console.log('有人要关我了!')
       this.$emit('update:showDialog', false)
       this.$refs.form.resetFields()
+      // 还原 form 的初始属性
+      this.form = {
+        code: '',
+        introduce: '',
+        managerId: '',
+        name: ''
+      }
     },
     async submit() {
       this.$refs.form.validate(async ok => {
         if (ok) {
           try {
             this.loading = true
-            await addDepartment({ ...this.form, pid: this.pid })
-            this.$message.success('新增部门成功')
+            if (this.form.id) {
+              // 发编辑请求
+              await updateDepartment(this.form)
+              this.$message.success('修改部门成功')
+            } else {
+              // 发添加请求
+              await addDepartment({ ...this.form, pid: this.currentid })
+              // 成功提示
+              this.$message.success('新增部门成功')
+            }
+
             this.$emit('updateData')
             this.close()
           } finally {
@@ -113,6 +146,13 @@ export default {
           }
         }
       })
+    },
+
+    async getDetail() {
+      const res = await getDepartmentDetail(this.currentid)
+      // console.log('子组件:', this.currentid)
+      // console.log(res)
+      this.form = res
     }
 
   }
