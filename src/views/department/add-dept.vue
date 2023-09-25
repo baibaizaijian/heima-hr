@@ -47,6 +47,7 @@ export default {
   },
   data() {
     return {
+      // 加载动画
       loading: false,
       ManagerList: [],
       form: {

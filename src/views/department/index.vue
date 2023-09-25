@@ -79,6 +79,7 @@ export default {
         // ref 有两个作用:
         // 1. 可用于获取 DOM 元素
         // 2. 可用于获取组件对象
+
         // console.log('父组件:', this.currentID)
         this.$nextTick(() => {
           this.$refs.addDept.getDetail()
