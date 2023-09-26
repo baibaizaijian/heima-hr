@@ -9,23 +9,50 @@
             {{ row.$index + 1+(q.page-1)*q.pagesize }}
           </template>
         </el-table-column>
-        <el-table-column prop="name" label="角色" width="200px" />
-        <el-table-column prop="state" label="启用" width="200px">
+        <el-table-column label="角色" width="200px">
           <template #default="{row}">
-            <el-tag :type="text[row.state][1]">{{ text[row.state][0] ||"未知" }}</el-tag>
+            <el-input v-if="row.isEdit" v-model="row.editRow.name" size="mini" />
+            <template v-else>{{ row.name }}</template>
           </template>
         </el-table-column>
-        <el-table-column prop="description" label="描述" />
+        <el-table-column label="启用" width="200px">
+          <template #default="{row}">
+            <el-switch
+              v-if="row.isEdit"
+              v-model="row.editRow.state"
+              :active-value="1"
+              :inactive-value="0"
+            />
+            <el-tag v-else :type="text[row.state][1]">{{ text[row.state][0] ||"未知" }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="描述">
+          <template #default="{row}">
+            <el-input v-if="row.isEdit" v-model="row.editRow.description" type="textarea" size="mini" />
+            <template v-else>
+              {{ row.description }}
+            </template>
+          </template>
+        </el-table-column>
         <el-table-column label="操作">
           <template #default="{row}">
-            <el-button type="text">分配权限</el-button>
-            <el-button type="text">编辑</el-button>
-            <el-popconfirm
-              title="确定删除吗？"
-              @confirm="del(row.id)"
-            >
-              <el-button slot="reference" type="text" style="margin-left:10px">删除</el-button>
-            </el-popconfirm>
+            <template v-if="row.isEdit">
+              <el-button size="mini" type="primary" @click="put(row)">确认</el-button>
+              <el-button size="mini" @click="row.isEdit=false">取消</el-button>
+            </template>
+            <template v-else>
+              <el-button type="text">分配权限</el-button>
+              <el-button type="text" @click="Edit(row)">编辑</el-button>
+              <el-popconfirm
+                title="确定删除吗？"
+                @confirm="del(row.id)"
+              >
+                <template #reference>
+                  <el-button type="text" style="margin-left:10px">删除</el-button>
+                </template>
+              </el-popconfirm>
+            </template>
+
           </template>
         </el-table-column>
       </el-table>
@@ -44,7 +71,9 @@
         <el-form-item label="角色名称" prop="name">
           <el-input v-model.trim="form.name" size="mini" style="width: 90%" />
         </el-form-item>
+        <!--  //激活时的值和取消时的值 -->
         <el-form-item label="启用" prop="state">
+
           <el-switch
             v-model="form.state"
             :active-value="1"
@@ -76,7 +105,7 @@
   </div>
 </template>
 <script>
-import { getRoleList, addRole, delRole } from '@/api/role'
+import { getRoleList, addRole, delRole, putRole } from '@/api/role'
 export default {
   name: 'Role',
   data() {
@@ -111,8 +140,24 @@ export default {
   methods: {
     async getDate() {
       const { rows, total } = await getRoleList(this.q)
+      // 在添加到 data 之前就把 isEdit 加上, 就不属于动态添加属性了
+      // rows.forEach(item => {
+      //   item.isEdit = false
+      // })
       this.list = rows
       // console.log(this.list)
+      this.list.forEach(item => {
+        // 提供了一个 API: $set() => 数组更新检测, 通过 数组[索引] = xxx 修改时无法响应式, 也是用这个方案解决的
+        // 参数1: 要设置属性的对象
+        // 参数2: 属性名
+        // 参数3: 属性值
+        this.$set(item, 'isEdit', false)
+        this.$set(item, 'editRow', {
+          description: item.description,
+          state: item.state,
+          name: item.name,
+          id: item.id.toString() })
+      })
       this.total = total
     },
     hChange(e) {
@@ -134,10 +179,45 @@ export default {
       this.close()
       this.$message.success('添加成功')
       this.getDate()
+    },
+    Edit(row) {
+      row.isEdit = true
+      // 重置数据
+      for (const key in row.editRow) {
+        row.editRow[key] = row[key]
+      }
+      /* for (const key in object) {
+        if (Object.hasOwnProperty.call(object, key))
+
+        hasOwnProperty：这是 JavaScript 对象的一个方法，
+      用于检查对象是否包含指定名称的属性。
+      它返回一个布尔值，指示属性是否存在于对象自身。
+
+      call(object, key)：call 是 JavaScript 中用于调用函数的方法。
+      在这里，我们使用 call 方法将 hasOwnProperty 方法应用于特定的对象 object 和属性名称 key。
+      这样做的好处是，它允许我们在一个对象上调用另一个对象的方法，
+      并将第一个对象作为方法的上下文（this）。
+
+      这个条件语句用于检查属性是否是对象自身的属性而不是继承的属性
+      {const element = object[key] };
+      重新赋值
+      } */
+    },
+    async put(row) {
+      if (row.editRow.name && row.editRow.description) {
+        try {
+          await putRole(row.editRow)
+          this.$message.success('修改成功')
+          // 如果有相同的属性，后面的属性会覆盖前面的属性。
+          Object.assign(row, { isEdit: false, ...row.editRow })
+        } catch (error) {
+          // console.log(error)
+        }
+      } else {
+        this.$message.warning('请输入角色和描述')
+      }
     }
-
   }
-
 }
 </script>
 

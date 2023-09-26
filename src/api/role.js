@@ -28,7 +28,7 @@ export const delRole = (id) => request.delete(`/sys/role/${id}`)
  * @param {*} id
  * @returns
  */
-export const putRole = (id) => request.put(`/sys/role${id}`)
+export const putRole = (data) => request.put(`/sys/role/${data.id}`, data)
 /**
  * 分配权限-角色
  * @param {*} id

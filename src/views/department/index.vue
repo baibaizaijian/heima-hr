@@ -59,7 +59,7 @@ export default {
       const res = await getDepartmentList()
       this.treeData = transList(res, 0)
       console.log('我要刷刷新')
-      // console.log(this.treeData)
+      console.log(this.treeData)
     },
 
     async  hCommand(type, id) {
