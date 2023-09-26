@@ -4,6 +4,7 @@ import request from '@/utils/request'
  * @returns
  */
 export const getRoleList = (params) => request.get('/sys/role', { params })
+
 /**
  * 获取-角色详情
  * @param {*} id
