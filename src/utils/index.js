@@ -125,8 +125,9 @@ export function transList(list, pid = 0) {
   const arr = []
   list.forEach(item => {
     if (item.pid === pid) {
+      const children = transList(list, item.id)
+      if (children.length) { item.children = children }
       arr.push(item)
-      item.children = transList(list, item.id)
     }
   })
   return arr

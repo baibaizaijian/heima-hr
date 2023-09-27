@@ -28,7 +28,7 @@
       </div>
       <div class="right">
         <el-row class="opeate-tools" type="flex" justify="end">
-          <el-button size="mini" type="primary">添加员工</el-button>
+          <el-button size="mini" type="primary" @click="$router.push('/employee/detail')">添加员工</el-button>
           <el-button size="mini" @click="showExcelDialog=true">excel导入</el-button>
           <el-button size="mini" @click="exExcel">excel导出</el-button>
         </el-row>
@@ -56,7 +56,9 @@
             <template #default="{ row }">
               <el-button type="text">查看</el-button>
               <el-button type="text">角色</el-button>
-              <el-button type="text" @click="del(row.id)">删除</el-button>
+              <el-popconfirm title="确认删除吗?" class="el-button el-button--text" @confirm="del(row.id)">
+                <el-button slot="reference" type="text">删除</el-button>
+              </el-popconfirm>
             </template>
           </el-table-column>
         </el-table>
@@ -72,13 +74,13 @@
 
       </div>
     </div>
-    <importExcelVue :show-excel-dialog.sync="showExcelDialog" />
+    <importExcelVue :show-excel-dialog.sync="showExcelDialog" :success="loadEmployee" />
   </div>
 </template>
 
 <script>
 import { getDepartmentList } from '@/api/department'
-import { getEmployeeList, exportExcel } from '@/api/employee'
+import { getEmployeeList, exportExcel, delEmployee } from '@/api/employee'
 import { transList } from '@/utils'
 
 import fileSaver from 'file-saver'
@@ -162,8 +164,14 @@ export default {
       const res = await exportExcel()
       console.log(res)
       fileSaver.saveAs(res, '员工表.xlsx')
+    },
+    async del(id) {
+      await delEmployee(id)
+      this.$message.success('删除成功')
+      // 最后一项,删完跳转上一页
+      if (this.list.length === 1 && this.q.page > 1) this.q.page--
+      this.loadEmployees()
     }
-
   }
 }
 
