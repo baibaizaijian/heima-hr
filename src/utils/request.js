@@ -26,7 +26,9 @@ service.interceptors.request.use(function(config) {
 
 // 添加响应拦截器
 service.interceptors.response.use(function(response) {
-// 解构返回数据
+  // 如果数据类型为 Blob 就直接返回
+  if (response.data instanceof Blob) return response.data
+  // 解构返回数据
   const { data, message, success } = response.data
   if (success) {
     return data
