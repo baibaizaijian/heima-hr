@@ -39,6 +39,7 @@ service.interceptors.response.use(function(response) {
     return Promise.reject(new Error(message))
   }
 }, function(error) {
+  if (!error.response.status) { return Promise.reject(error) }
   if (error.response.status === 401) {
     // 提示用户
     Message.error('请重新登录')

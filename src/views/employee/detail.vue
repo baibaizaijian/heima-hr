@@ -24,7 +24,7 @@
           <el-row>
             <el-col :span="12">
               <el-form-item label="工号" prop="workNumber">
-                <el-input size="mini" class="inputW" disabled />
+                <el-input v-model="userInfo.workNumber" size="mini" class="inputW" disabled />
               </el-form-item>
             </el-col>
           </el-row>
@@ -36,6 +36,7 @@
                   v-model="userInfo.mobile"
                   size="mini"
                   class="inputW"
+                  :disabled="!!userInfo.id"
                 />
               </el-form-item>
             </el-col>
@@ -56,8 +57,8 @@
                   size="mini"
                   class="inputW"
                 >
-                  <el-option label="正式" value="1" />
-                  <el-option label="非正式" value="2" />
+                  <el-option label="正式" :value="1" />
+                  <el-option label="非正式" :value="2" />
                 </el-select>
               </el-form-item>
             </el-col>
@@ -92,6 +93,7 @@
           <el-row>
             <el-col :span="12">
               <el-form-item label="员工头像">
+                <imageUpload v-model="userInfo.staffPhoto" />
                 <!-- 放置上传图片 -->
               </el-form-item>
             </el-col>
@@ -99,7 +101,7 @@
           <!-- 保存个人信息 -->
           <el-row type="flex">
             <el-col :span="12" style="margin-left: 220px">
-              <el-button size="mini" type="primary" @click="saveData">保存更新</el-button>
+              <el-button size="mini" type="primary" @click="submit">保存更新</el-button>
             </el-col>
           </el-row>
         </el-form>
@@ -109,10 +111,11 @@
 </template>
 
 <script>
+import imageUpload from './components/image-upload.vue'
 import selectTree from './components/select-tree'
-import { addEmployee } from '@/api/employee'
+import { addEmployee, getEmployee, updateEmployee } from '@/api/employee'
 export default {
-  components: { selectTree },
+  components: { selectTree, imageUpload },
   data() {
     return {
       userInfo: {
@@ -169,16 +172,24 @@ export default {
       }
     }
   },
+  async created() {
+    const id = this.$route.params.id
+    if (id) {
+      this.userInfo = await getEmployee(id)
+    }
+  },
   methods: {
-    saveData() {
-      this.$refs.userForm.validate(async isOK => {
-        if (isOK) {
-          // 校验通过
-          await addEmployee(this.userInfo)
-          this.$message.success('新增员工成功')
-          this.$router.push('/employee')
-        }
-      })
+
+    async submit() {
+      await this.$refs.userForm.validate()
+      if (this.userInfo.id) {
+        await updateEmployee(this.userInfo)
+        this.$message.success('修改员工成功')
+      } else {
+        await addEmployee(this.userInfo)
+        this.$message.success('新增员工成功')
+      }
+      this.$router.push('/employee')
     }
   }
 }

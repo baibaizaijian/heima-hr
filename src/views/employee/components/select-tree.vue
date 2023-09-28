@@ -24,7 +24,8 @@ export default {
       list: [],
       props: {
         value: 'id',
-        label: 'name'
+        label: 'name',
+        checkStrictly: true
       }
 
     }

@@ -54,7 +54,7 @@
           <el-table-column label="入职时间" sortable prop="timeOfEntry" />
           <el-table-column label="操作" width="200px">
             <template #default="{ row }">
-              <el-button type="text">查看</el-button>
+              <el-button type="text" @click="$router.push(`/employee/detail/${row.id}`)">查看</el-button>
               <el-button type="text">角色</el-button>
               <el-popconfirm title="确认删除吗?" class="el-button el-button--text" @confirm="del(row.id)">
                 <el-button slot="reference" type="text">删除</el-button>
@@ -170,7 +170,7 @@ export default {
       this.$message.success('删除成功')
       // 最后一项,删完跳转上一页
       if (this.list.length === 1 && this.q.page > 1) this.q.page--
-      this.loadEmployees()
+      this.loadEmployee()
     }
   }
 }

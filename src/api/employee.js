@@ -33,3 +33,8 @@ export const importExcel = (data) => request.post('/sys/user/import', data)
 export const delEmployee = (id) => request.delete(`/sys/user/${id}`)
 // 新增员工
 export const addEmployee = (data) => request.post(`/sys/user`, data)
+// 获取-员工-基本信息
+export const getEmployee = (id) => request.get(`/sys/user/${id}`)
+// 修改-员工-基本信息
+export const updateEmployee = (data) => request.put(`/sys/user/${data.id}`, data)
+
