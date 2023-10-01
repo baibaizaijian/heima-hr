@@ -21,13 +21,13 @@
         </el-table-column>
       </el-table>
     </div>
-    <permissionDailog id="id" :dialog-visible.sync="dialogVisible" />
+    <permissionDailog :id="id" :dialog-visible.sync="dialogVisible" />
 
   </div>
 </template>
 <script>
 import permissionDailog from './permission-dailog'
-import { getPermissionList, delPermission } from '@/api/permission'
+import { getPermissionList, delPermission, getPermission } from '@/api/permission'
 import { transList } from '@/utils'
 export default {
   name: 'Permission',
@@ -51,6 +51,7 @@ export default {
       const res = await getPermissionList()
 
       this.list = transList(res)
+      console.log(this.list)
     },
     async del(id) {
       this.$confirm('此操作将删除该权限, 是否继续?', '提示', {
@@ -66,12 +67,14 @@ export default {
       })
     },
     fn() {
-      console.log('完成')
       this.dialogVisible = true
     },
-    add(id) {
+    async add(id) {
       this.id = id
       this.dialogVisible = true
+
+      const res = await getPermission(id)
+      console.log(res)
     }
   }
 }

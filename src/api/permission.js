@@ -7,3 +7,15 @@ export const getPermissionList = () => request.get('/sys/permission')
  * @returns
  */
 export const delPermission = (id) => request.delete(`/sys/permission/${id}`)
+/**
+ * 获取-权限点详情
+ * @param {*} id
+ * @returns
+ */
+export const getPermission = (id) => request.get(`/sys/permission/${id}`)
+/**
+ * 新增-权限
+ * @param {*} data
+ * @returns
+ */
+export const addPermission = (data) => request.post('/sys/permission', data)
