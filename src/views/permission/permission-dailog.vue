@@ -58,6 +58,7 @@ export default {
       if (childrenList.some(item => item.code === value)) {
         callback(new Error('权限名称已存在'))
       } else {
+        
         callback()
       }
     }
