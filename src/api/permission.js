@@ -19,3 +19,9 @@ export const getPermission = (id) => request.get(`/sys/permission/${id}`)
  * @returns
  */
 export const addPermission = (data) => request.post('/sys/permission', data)
+/**
+ * 修改-权限点详情
+ * @param {*} id
+ * @returns
+ */
+export const putPermission = (data) => request.put(`/sys/permission/${data.id}`, data)

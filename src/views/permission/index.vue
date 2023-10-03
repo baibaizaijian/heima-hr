@@ -15,19 +15,19 @@
         <el-table-column label="操作">
           <template #default="{ row }">
             <el-button v-if="row.type === 1" type="text" @click="add(row.id)">添加</el-button>
-            <el-button type="text">编辑</el-button>
+            <el-button type="text" @click="edit(row.id)">编辑</el-button>
             <el-button type="text" @click="del(row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
-    <permissionDailog :id="id" :dialog-visible.sync="dialogVisible" />
+    <permissionDailog :id.sync="id" ref="addDept" :dialog-visible.sync="dialogVisible" @updateData="getdate()" />
 
   </div>
 </template>
 <script>
 import permissionDailog from './permission-dailog'
-import { getPermissionList, delPermission, getPermission } from '@/api/permission'
+import { getPermissionList, delPermission } from '@/api/permission'
 import { transList } from '@/utils'
 export default {
   name: 'Permission',
@@ -40,7 +40,7 @@ export default {
       list: [],
       dialogVisible: false,
       // 当前点击的id
-      id: ''
+      id: 0
     }
   },
   created() {
@@ -51,7 +51,7 @@ export default {
       const res = await getPermissionList()
 
       this.list = transList(res)
-      console.log(this.list)
+      // console.log(this.list)
     },
     async del(id) {
       this.$confirm('此操作将删除该权限, 是否继续?', '提示', {
@@ -72,9 +72,13 @@ export default {
     async add(id) {
       this.id = id
       this.dialogVisible = true
-
-      const res = await getPermission(id)
-      console.log(res)
+    },
+    edit(id) {
+      this.id = id
+      this.dialogVisible = true
+      this.$nextTick(() => {
+        this.$refs.addDept.Edit()
+      })
     }
   }
 }
