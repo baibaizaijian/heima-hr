@@ -12,6 +12,7 @@ export const delPermission = (id) => request.delete(`/sys/permission/${id}`)
  * @param {*} id
  * @returns
  */
+
 export const getPermission = (id) => request.get(`/sys/permission/${id}`)
 /**
  * 新增-权限
