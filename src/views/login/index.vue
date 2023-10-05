@@ -30,6 +30,8 @@
   </div>
 </template>
 <script>
+// import store from '@/store'
+import { mapGetters } from 'vuex'
 export default {
   name: 'Login',
   data() {
@@ -58,6 +60,11 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapGetters([
+      'routes'
+    ])
+  },
   methods: {
     async login() {
       try {
@@ -66,7 +73,12 @@ export default {
         await this.$store.dispatch('user/login', this.form)
         // 提示用户
         this.$message.success('登录成功')
-        // 放回上次页面
+        // 放回上次页面s
+        // console.log('当前路由', this.$store.state.user.routes)
+        // const { roles } = await store.dispatch('user/getUserInfo')
+        // console.log('当前路由', roles.menus)
+
+        // this.$route.query.redirect
         this.$router.push(this.$route.query.redirect || '/')
       } catch (error) {
         this.isValidating = true

@@ -1,11 +1,13 @@
 import { getToken, removeToken, setToken } from '@/utils/auth'
 import { getInfo, login } from '@/api/user'
+import { constantRoutes, resetRouter } from '@/router'
 export default {
   namespaced: true,
   state: {
     token: getToken(),
     // 用户信息
-    userInfo: {}
+    userInfo: {},
+    routes: constantRoutes // 静态路由的数组
   },
   mutations: {
     setToken(state, token) {
@@ -22,6 +24,12 @@ export default {
     },
     setUserInfo(state, userInfo) {
       state.userInfo = userInfo
+    },
+    setRoutes(state, newRoutes) {
+      state.routes = [...constantRoutes, ...newRoutes] // 静态路由 + 动态路由
+    },
+    resetRoutes(state) {
+      state.routes = constantRoutes
     }
   },
   actions: {
@@ -35,11 +43,14 @@ export default {
       const userInfo = await getInfo()
       console.log(userInfo)
       context.commit('setUserInfo', userInfo)
+      return userInfo
     },
-    // 退出函数
+    // 退出登录
     logout(context) {
-      context.commit('removeToken')
-      context.commit('setUserInfo', {})
+      context.commit('removeToken')// 删除token
+      context.commit('setUserInfo', {})// 设置用户对象为空
+      context.commit('resetRoutes')
+      resetRouter()// 重置路由
     }
   },
   getters: {}

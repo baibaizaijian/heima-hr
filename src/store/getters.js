@@ -1,3 +1,4 @@
+
 const getters = {
   // 快捷访问
   sidebar: state => state.app.sidebar,
@@ -5,6 +6,7 @@ const getters = {
   token: state => state.user.token,
   avatar: state => state.user.userInfo.staffPhoto,
   name: state => state.user.userInfo.username,
-  userInfo: state => state.user.userInfo
+  userInfo: state => state.user.userInfo,
+  routes: state => state.user.routes
 }
 export default getters

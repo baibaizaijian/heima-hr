@@ -1,6 +1,7 @@
 import layout from '@/layout'
 export default {
   // 路由信息
+  name: 'department',
   path: '/department',
   component: layout, // 一级路由
   children: [{

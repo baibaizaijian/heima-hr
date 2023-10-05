@@ -30,13 +30,14 @@ export default {
   components: { SidebarItem, Logo },
   computed: {
     ...mapGetters([
-      'sidebar'
+      'sidebar',
+      'routes'
     ]),
-    routes() {
-      // $router.options.routes我们配置的路由规则
-      console.log(this.$router.options.routes)
-      return this.$router.options.routes
-    },
+    // routes() {
+    //   // $router.options.routes我们配置的路由规则
+    //   console.log(this.$router.options.routes)
+    //   return this.$router.options.routes
+    // },
     activeMenu() {
       const route = this.$route
       const { meta, path } = route

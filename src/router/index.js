@@ -66,7 +66,13 @@ export const constantRoutes = [
       }
 
     ]
-  },
+  }
+
+  // 404 page must be placed at the end !!!
+  // { path: '*', redirect: '/404', hidden: true }
+]
+// 导出动态路由数组, 供后面做权限控制时使用
+export const dynamicRoutes = [
   department,
   role,
   employee,
@@ -74,10 +80,7 @@ export const constantRoutes = [
   attendance,
   approval,
   salary,
-  social,
-
-  // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  social
 ]
 
 const createRouter = () => new Router({
@@ -90,6 +93,9 @@ const createRouter = () => new Router({
 const router = createRouter()
 
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
+/**
+ * 重置路由
+ */
 export function resetRouter() {
   const newRouter = createRouter()
   router.matcher = newRouter.matcher // reset router

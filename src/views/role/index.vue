@@ -111,6 +111,7 @@
         node-key="id"
         :default-checked-keys="permIds"
         show-checkbox
+        check-strictly
         default-expand-all
       />
       <el-row type="flex" justify="center" style="width: 87%">
