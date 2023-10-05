@@ -55,7 +55,7 @@
           <el-table-column label="操作" width="200px">
             <template #default="{ row }">
               <el-button type="text" @click="$router.push(`/employee/detail/${row.id}`)">查看</el-button>
-              <el-button type="text">角色</el-button>
+              <el-button type="text" @click="openRoleDialog(row.id)">角色</el-button>
               <el-popconfirm title="确认删除吗?" class="el-button el-button--text" @confirm="del(row.id)">
                 <el-button slot="reference" type="text">删除</el-button>
               </el-popconfirm>
@@ -75,12 +75,24 @@
       </div>
     </div>
     <importExcelVue :show-excel-dialog.sync="showExcelDialog" :success="loadEmployee" />
+    <el-dialog title="分配角色" :visible.sync="showRoleDialog" @close="close">
+      <el-checkbox-group v-model="checkList">
+        <el-checkbox v-for="item in RoleList" :key="item.id" :label="item.id">{{ item.name }}</el-checkbox>
+      </el-checkbox-group>
+      <el-row slot="footer" type="flex" justify="center">
+        <el-col :span="6">
+          <el-button type="primary" size="mini" @click="submitRole">确定</el-button>
+          <el-button size="mini" @click="close">取消</el-button>
+        </el-col>
+      </el-row>
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import { enabledRole } from '@/api/role'
 import { getDepartmentList } from '@/api/department'
-import { getEmployeeList, exportExcel, delEmployee } from '@/api/employee'
+import { getEmployeeList, exportExcel, delEmployee, getEmployee, putAssignRoles } from '@/api/employee'
 import { transList } from '@/utils'
 
 import fileSaver from 'file-saver'
@@ -105,7 +117,11 @@ export default {
         departmentId: null
       },
       total: null,
-      showExcelDialog: false
+      showExcelDialog: false, //
+      showRoleDialog: false, // 分配角色
+      checkList: [], // 选中角色
+      RoleList: [], // 角色列表
+      id: '' // 当前选中的员工
 
     }
   },
@@ -121,6 +137,7 @@ export default {
   },
   async created() {
     await this.loadData()
+
     // this.loadEmployee()
   },
   methods: {
@@ -171,6 +188,28 @@ export default {
       // 最后一项,删完跳转上一页
       if (this.list.length === 1 && this.q.page > 1) this.q.page--
       this.loadEmployee()
+    },
+    // 打开获取，全部启用角色
+    async openRoleDialog(id) {
+      this.id = id
+      this.showRoleDialog = true
+      const res = await enabledRole()
+      this.RoleList = res
+      // console.log(res)
+      const res2 = await getEmployee(id)
+      console.log(res2.roleIds)
+      this.checkList = res2.roleIds
+    },
+    close() {
+      this.id = ''
+      this.showRoleDialog = false
+      this.checkList = []
+      this.RoleList = []
+    },
+    async submitRole() {
+      await putAssignRoles({ id: this.id, roleIds: this.checkList })
+      this.$message.success('分配角色成功')
+      this.close()
     }
   }
 }

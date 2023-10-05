@@ -38,3 +38,6 @@ export const getEmployee = (id) => request.get(`/sys/user/${id}`)
 // 修改-员工-基本信息
 export const updateEmployee = (data) => request.put(`/sys/user/${data.id}`, data)
 
+// 分配-员工-角色
+export const putAssignRoles = (data) => request.put(`/sys/user/assignRoles`, data)
+
