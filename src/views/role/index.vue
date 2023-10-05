@@ -41,7 +41,7 @@
               <el-button size="mini" @click="row.isEdit=false">取消</el-button>
             </template>
             <template v-else>
-              <el-button type="text">分配权限</el-button>
+              <el-button type="text" @click="btnPermission(row.id)">分配权限</el-button>
               <el-button type="text" @click="Edit(row)">编辑</el-button>
               <el-popconfirm
                 title="确定删除吗？"
@@ -102,10 +102,29 @@
         </el-form-item>
       </el-form>
     </el-dialog>
+    <!-- 分配权限弹框 -->
+    <el-dialog :visible.sync="assignVisible" title="分配权限" @close="closeAssign">
+      <el-tree
+        ref="tree"
+        :data="permissionData"
+        :props="{ label: 'name', children: 'children',}"
+        node-key="id"
+        :default-checked-keys="permIds"
+        show-checkbox
+        default-expand-all
+      />
+      <el-row type="flex" justify="center" style="width: 87%">
+        <el-button type="primary" size="mini" @click="submitAssign">确认</el-button>
+        <el-button size="mini" @click="closeAssign">取消</el-button>
+      </el-row>
+    </el-dialog>
   </div>
 </template>
 <script>
-import { getRoleList, addRole, delRole, putRole } from '@/api/role'
+import { getRoleList, addRole, delRole, putRole, getRole, assignRole } from '@/api/role'
+import { getPermissionList } from '@/api/permission'
+import { transList } from '@/utils'
+
 export default {
   name: 'Role',
   data() {
@@ -121,7 +140,12 @@ export default {
         0: ['未启用', 'danger'],
         1: ['已启用', 'success']
       },
-      visible: false,
+
+      assignVisible: false, // 显示分配权限
+      permissionData: [], // 权限列表
+      permIds: [], // 当前选中权限
+      visible: false, // 显示添加角色
+      id: '', // 当前分配角色
       form: {
         name: '',
         description: '',
@@ -216,6 +240,32 @@ export default {
       } else {
         this.$message.warning('请输入角色和描述')
       }
+    },
+    async btnPermission(id) {
+      this.id = id
+      this.assignVisible = true
+      let res = await getPermissionList()
+      res = res.filter(item => item.enVisible === '1')
+      // console.log('已开启的', res)
+      this.permissionData = transList(res, 0)
+      // console.log(this.permissionData)
+      const res2 = await getRole(id)
+      this.permIds = res2.permIds
+      console.log('当前角色', res2.permIds)
+    },
+    // 关闭分配权限弹框
+    closeAssign() {
+      this.assignVisible = false
+      this.permissionData = [] // 权限列表
+      this.permIds = []
+      this.id = ''
+    },
+    // getCheckedKeys若节点可被选择（即 show-checkbox 为 true），则返回目前被选中的节点的 key 所组成的数组
+    // 提交权限
+    async submitAssign() {
+      await assignRole({ id: this.id, permIds: this.$refs.tree.getCheckedKeys() })
+      this.$message.success('分配成功')
+      this.closeAssign()
     }
   }
 }

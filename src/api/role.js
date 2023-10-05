@@ -10,7 +10,7 @@ export const getRoleList = (params) => request.get('/sys/role', { params })
  * @param {*} id
  * @returns
  */
-export const getRole = (id) => request.get(`/sys/role${id}`)
+export const getRole = (id) => request.get(`/sys/role/${id}`)
 
 /**
  *新增角色
