@@ -29,8 +29,11 @@
       <div class="right">
         <el-row class="opeate-tools" type="flex" justify="end">
           <el-button size="mini" type="primary" @click="$router.push('/employee/detail')">添加员工</el-button>
+
           <el-button size="mini" @click="showExcelDialog=true">excel导入</el-button>
-          <el-button size="mini" @click="exExcel">excel导出</el-button>
+          <!-- 期望: 拥有 export 权限点的用户才可以看到这个按钮 -->
+          <!-- v-if 可以实现功能, 但不方便复用, 而按钮级权限控制经常会用到, 所以要对其进行封装 -->
+          <el-button v-perm="'export'" size="mini" @click="exExcel">excel导出</el-button>
         </el-row>
         <!-- 表格组件 -->
         <el-table
@@ -57,7 +60,8 @@
               <el-button type="text" @click="$router.push(`/employee/detail/${row.id}`)">查看</el-button>
               <el-button type="text" @click="openRoleDialog(row.id)">角色</el-button>
               <el-popconfirm title="确认删除吗?" class="el-button el-button--text" @confirm="del(row.id)">
-                <el-button slot="reference" type="text">删除</el-button>
+
+                <el-button slot="reference" v-perm="'del-employee'" type="text">删除</el-button>
               </el-popconfirm>
             </template>
           </el-table-column>

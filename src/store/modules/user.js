@@ -41,7 +41,7 @@ export default {
     },
     async getUserInfo(context) {
       const userInfo = await getInfo()
-      console.log(userInfo)
+      // console.log(userInfo)
       context.commit('setUserInfo', userInfo)
       return userInfo
     },

@@ -18,3 +18,9 @@ export function updatePass(data) {
     data
   })
 }
+export function getUserDetailById(id) {
+  return request({
+    url: `/salarys/modify/${id}`,
+    method: 'get'
+  })
+}
