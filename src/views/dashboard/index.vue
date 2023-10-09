@@ -6,13 +6,14 @@
         <div class="panel">
           <!-- 个人信息 -->
           <div class="user-info">
-            <img class="avatar" src="../../assets/common/defaultHead.png" alt="">
+            <img v-if="avatar" class="avatar" :src="avatar" alt="">
+            <span v-else class="username">{{ name?.charAt(0) }}</span>
             <div class="company-info">
               <div class="title">
                 江苏传智播客教育科技股份有限公司
                 <span>体验版</span>
               </div>
-              <div class="depart">庆山 ｜ 传智播客-总裁办</div>
+              <div class="depart">{{ name }} ｜ {{ company }}-{{ departmentName }}</div>
             </div>
           </div>
           <!-- 代办 -->
@@ -20,37 +21,37 @@
             <div class="todo-item">
               <span>组织总人数</span>
               <!-- 起始值 终点值  滚动时间 -->
-              <CountTo :start-val="0" :end-val="228" :duration="2000" />
+              <CountTo :start-val="0" :end-val="homeData.employeeTotal" :duration="2000" />
 
             </div>
             <div class="todo-item">
               <span>正式员工</span>
-              <CountTo :start-val="0" :end-val="334" :duration="2000" />
+              <CountTo :start-val="0" :end-val="homeData.regularEmployeeTotal" :duration="2000" />
             </div>
             <div class="todo-item">
               <span>合同待签署</span>
-              <CountTo :start-val="0" :end-val="345" :duration="2000" />
+              <CountTo :start-val="0" :end-val="homeData.contractSignTotal" :duration="2000" />
 
             </div>
             <div class="todo-item">
               <span>待入职</span>
 
-              <CountTo :start-val="0" :end-val="890" :duration="2000" />
+              <CountTo :start-val="0" :end-val="homeData.toBeEmployed" :duration="2000" />
             </div>
             <div class="todo-item">
               <span>本月待转正</span>
 
-              <CountTo :start-val="0" :end-val="117" :duration="2000" />
+              <CountTo :start-val="0" :end-val="homeData.toBeConfirmed" :duration="2000" />
             </div>
             <div class="todo-item">
               <span>本月待离职</span>
 
-              <CountTo :start-val="0" :end-val="234" :duration="2000" />
+              <CountTo :start-val="0" :end-val="homeData.toBeDismissed" :duration="2000" />
             </div>
             <div class="todo-item">
               <span>接口总访问</span>
 
-              <CountTo :start-val="0" :end-val="789" :duration="2000" />
+              <CountTo :start-val="0" :end-val="homeData.interfaceAccessTotal" :duration="2000" />
             </div>
           </div>
         </div>
@@ -88,27 +89,27 @@
               <div class="info-main">
                 <span>申报人数</span>
 
-                <CountTo :start-val="0" :end-val="223" :duration="2000" />
+                <CountTo :start-val="0" :end-val="homeData.socialInsurance?.declarationTotal" :duration="2000" />
               </div>
               <div class="info-list">
                 <div class="info-list-item">
                   <span>待申报(人)</span>
 
-                  <CountTo :start-val="0" :end-val="117" :duration="2000" />
+                  <CountTo :start-val="0" :end-val="homeData.socialInsurance?.toDeclareTotal" :duration="2000" />
                 </div>
                 <div class="info-list-item">
                   <span>申报中(人)</span>
 
-                  <CountTo :start-val="0" :end-val="167" :duration="2000" />
+                  <CountTo :start-val="0" :end-val="homeData.socialInsurance?.declaringTotal" :duration="2000" />
                 </div>
                 <div class="info-list-item">
                   <span>已申报(人)</span>
 
-                  <CountTo :start-val="0" :end-val="24" :duration="2000" />
+                  <CountTo :start-val="0" :end-val="homeData.socialInsurance?.declaredTotal" :duration="2000" />
                 </div>
               </div>
             </div>
-            <div class="chart">
+            <div ref="social" class="chart">
               <!-- 图表 -->
             </div>
           </div>
@@ -121,27 +122,27 @@
               <div class="info-main">
                 <span>申报人数</span>
 
-                <CountTo :start-val="0" :end-val="335" :duration="2000" />
+                <CountTo :start-val="0" :end-val="homeData.providentFund?.declarationTotal" :duration="2000" />
               </div>
               <div class="info-list">
                 <div class="info-list-item">
                   <span>待申报(人)</span>
 
-                  <CountTo :start-val="0" :end-val="345" :duration="2000" />
+                  <CountTo :start-val="0" :end-val="homeData.providentFund?.toDeclareTotal" :duration="2000" />
                 </div>
                 <div class="info-list-item">
                   <span>申报中(人)</span>
 
-                  <CountTo :start-val="0" :end-val="109" :duration="2000" />
+                  <CountTo :start-val="0" :end-val="homeData.providentFund?.declaringTotal" :duration="2000" />
                 </div>
                 <div class="info-list-item">
                   <span>已申报(人)</span>
 
-                  <CountTo :start-val="0" :end-val="77" :duration="2000" />
+                  <CountTo :start-val="0" :end-val="homeData.providentFund?.declaredTotal" :duration="2000" />
                 </div>
               </div>
             </div>
-            <div class="chart">
+            <div ref="provident" class="chart">
               <!-- 图表 -->
             </div>
           </div>
@@ -185,36 +186,16 @@
         <div class="panel">
           <div class="panel-title">通知公告</div>
           <div class="information-list">
-            <div class="information-list-item">
-              <img src="@/assets/common/img.jpeg" alt="">
+            <div v-for="(item) in Notice" :key="item.createTime" class="information-list-item">
+              <img :src="item.icon" alt="">
               <div>
                 <p>
-                  <span class="col">朱继柳</span> 发布了
-                  第1期“传智大讲堂”互动讨论获奖名单公布
+                  {{ item.notice }}
                 </p>
-                <p>2018-07-21 15:21:38</p>
+                <p>{{ item.createTime }}</p>
               </div>
             </div>
-            <div class="information-list-item">
-              <img src="@/assets/common/img.jpeg" alt="">
-              <div>
-                <p>
-                  <span class="col">朱继柳</span> 发布了
-                  第1期“传智大讲堂”互动讨论获奖名单公布
-                </p>
-                <p>2018-07-21 15:21:38</p>
-              </div>
-            </div>
-            <div class="information-list-item">
-              <img src="@/assets/common/img.jpeg" alt="">
-              <div>
-                <p>
-                  <span class="col">朱继柳</span> 发布了
-                  第1期“传智大讲堂”互动讨论获奖名单公布
-                </p>
-                <p>2018-07-21 15:21:38</p>
-              </div>
-            </div>
+
           </div>
         </div>
       </div>
@@ -223,10 +204,143 @@
 </template>
 
 <script>
+import { getHomeData, getNotice } from '@/api/home'
 import CountTo from 'vue-count-to'
+// import * as echarts from 'echarts' // 引入所有的echarts
+import * as echarts from 'echarts/core' // 引入核心包
+import { LineChart } from 'echarts/charts' // 引入折线图
+import { GridComponent, TooltipComponent } from 'echarts/components' // 引入组件
+import { CanvasRenderer } from 'echarts/renderers'// 引入渲染器
+echarts.use([
+  LineChart,
+  GridComponent,
+  CanvasRenderer,
+  TooltipComponent
+])
+import { mapGetters } from 'vuex'
 export default {
   components: {
     CountTo
+  },
+  data() {
+    return {
+      homeData: {},
+      Notice: []
+
+    }
+  },
+  computed: {
+    ...mapGetters(['avatar', 'name', 'company', 'departmentName'])
+  },
+  watch: {
+    homeData() {
+      console.log(this.homeData)
+      // 设置图表
+      this.social.setOption({
+        tooltip: {
+          trigger: 'axis'
+        },
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          data: this.homeData.socialInsurance?.xAxis
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: [
+          {
+            data: this.homeData.socialInsurance?.yAxis,
+            symbol: 'none',
+            type: 'line',
+            areaStyle: {
+
+              color: {
+                type: 'linear',
+                x: 0,
+                y: 0,
+                x2: 0,
+                y2: 1,
+                colorStops: [{
+                  offset: 0, color: 'rgba(120, 232, 225, 1)' // 渐变起始颜色
+                }, {
+                  offset: 1, color: 'rgba(120, 232, 225, 0.2)' // 渐变结束颜色
+                }]
+              }
+              // color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              //   {
+              //     offset: 0,
+              //     color: 'rgba(120, 232, 225, 1)'
+              //   },
+              //   {
+              //     offset: 1,
+              //     color: 'rgba(120, 232, 225, 0.2)'
+              //   }
+              // ])
+            },
+            lineStyle: {
+              color: '#74e4e0' // 线的颜色
+            }
+          }
+        ]
+      })
+      this.provident.setOption({
+        tooltip: {
+          trigger: 'axis'
+        },
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          data: this.homeData.providentFund?.xAxis
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: [
+          {
+            data: this.homeData.providentFund?.yAxis,
+            symbol: 'none',
+            type: 'line',
+            areaStyle: {
+              color: {
+                type: 'linear',
+                x: 0,
+                y: 0,
+                x2: 0,
+                y2: 1,
+                colorStops: [{
+                  offset: 0, color: 'rgba(120, 232, 225, 1)' // 渐变起始颜色
+                }, {
+                  offset: 1, color: 'rgba(120, 232, 225, 0.2)' // 渐变结束颜色
+                }]
+              }
+
+            },
+            lineStyle: {
+              color: '#04c9be' // 线的颜色
+            }
+          }
+        ]
+      })
+    }
+  },
+  created() {
+    this.getData()
+  },
+  mounted() {
+    // 获取展示的数据 设置给图表
+    // 监听homeData的变化
+    this.social = echarts.init(this.$refs.social) // 初始化echart
+    // data中没有声明 不是响应式
+    this.provident = echarts.init(this.$refs.provident)
+  },
+  methods: {
+    async getData() {
+      this.homeData = await getHomeData()
+      this.Notice = await getNotice()
+      console.log(this.Notice)
+    }
+
   }
 }
 </script>

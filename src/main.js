@@ -23,10 +23,16 @@ import '@/permission' // permission control
  * Currently MockJs will be used in the production environment,
  * please remove it before going online ! ! !
  */
-if (process.env.NODE_ENV === 'production') {
-  const { mockXHR } = require('../mock')
-  mockXHR()
-}
+/* 如果不想使用mock server
+想使用mock js进行mock api
+可以执行mock xhr
+
+目前生产环境会使用mock js
+ 上线前请删除 */
+// if (process.env.NODE_ENV === 'production') {
+//   const { mockXHR } = require('../mock')
+//   mockXHR()
+// }
 
 // set ElementUI lang to EN
 // Vue.use(ElementUI, { locale })

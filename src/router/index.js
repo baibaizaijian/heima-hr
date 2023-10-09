@@ -84,7 +84,7 @@ export const dynamicRoutes = [
 ]
 
 const createRouter = () => new Router({
-  // mode: 'history', //这表示没有启用基于 history 的路由模式。
+  mode: 'history', // 这表示没有启用基于 history 的路由模式。
   // scrollBehavior选项定义了路由切换时页面滚动的行为，它会将页面滚动到顶部（{ y: 0 }）
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
