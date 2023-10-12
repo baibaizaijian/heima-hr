@@ -179,12 +179,10 @@ export default {
     }
   },
   methods: {
-
     async submit() {
       await this.$refs.userForm.validate()
       if (this.userInfo.id) {
         await updateEmployee(this.userInfo)
-
         this.$message.success('修改员工成功')
       } else {
         await addEmployee(this.userInfo)
