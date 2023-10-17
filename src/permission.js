@@ -11,6 +11,7 @@ import { dynamicRoutes } from './router'
 const whiteList = ['/login']
 // 前置守卫
 router.beforeEach(async(to, form, next) => {
+  
   // 开启进度条
   nprogress.start()
   // 判断是否登录
