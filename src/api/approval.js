@@ -7,6 +7,7 @@ export function getApprovalList(data) {
     data
   })
 }
+
 // 获取审批信息
 export function getInformation(id) {
   return request({
